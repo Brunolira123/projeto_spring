@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,14 +27,34 @@ public class Empresa {
 	private Long id;
 	private String razao;
 	private String cnpj;
+	
+	private Boolean ativo;
 
 	@Embedded
 	private Endereco endereco;
 
 	public Empresa(DadosCadastroEmpresa dados) {
+		this.ativo = true;
 		this.cnpj = dados.cnpj();
 		this.razao = dados.razao();
 		this.endereco = new Endereco(dados.endereco());
+	}
+
+	public void atualizarInfo(@Valid DadosAtualizarEmpresa dados) {
+		if(dados.razao() != null) {			
+			this.razao = dados.razao();
+		}
+		if(dados.cnpj() != null) {
+			this.cnpj = dados.razao();
+		}
+		if(dados.endereco() != null) {
+			this.endereco.atualizarInfo(dados.endereco()) ;
+		}
+		
+	}
+
+	public void excluir() {
+		this.ativo = false;
 	}
 
 }
