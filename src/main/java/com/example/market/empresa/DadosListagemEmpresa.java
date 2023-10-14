@@ -10,3 +10,4 @@ public record DadosListagemEmpresa(
 		this(empresa.getId(), empresa.getRazao(), empresa.getCnpj());
 	}
 }
+ 

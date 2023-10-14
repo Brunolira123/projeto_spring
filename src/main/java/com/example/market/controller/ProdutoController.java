@@ -14,56 +14,57 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import com.example.market.empresa.DadosAtualizarEmpresa;
-import com.example.market.empresa.DadosCadastroEmpresa;
-import com.example.market.empresa.DadosListagemEmpresa;
 import com.example.market.empresa.Empresa;
-import com.example.market.empresa.EmpresaRepository;
+import com.example.market.produto.DadosCadastroProduto;
+import com.example.market.produto.DadosListagemProduto;
+import com.example.market.produto.Produto;
+import com.example.market.produto.ProdutoRepository;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("empresa") 
-public class EmpresaController {
+@RequestMapping("produto")
+public class ProdutoController {
 	
 	@Autowired
-	private EmpresaRepository repository;
-
+	ProdutoRepository repository;
+	
 	@PostMapping
-	public ResponseEntity<?> cadastrar(@RequestBody @Valid DadosCadastroEmpresa dados, UriComponentsBuilder uriBuilder) {
+	public ResponseEntity<?> cadastrar(@RequestBody @Valid DadosCadastroProduto dados, UriComponentsBuilder uriBuilder) {
 		
-		var empresa = new Empresa(dados);
-		repository.save(empresa);
+		var produto = new Produto(dados);
+		repository.save(produto);
 		
-		var uri = uriBuilder.path("/empresa/{id}").buildAndExpand(empresa.getId()).toUri();
+		var uri = uriBuilder.path("/produto/{id}").buildAndExpand(produto.getId()).toUri();
 		
-		return ResponseEntity.created(uri).body(new DadosListagemEmpresa(empresa));
+		return ResponseEntity.created(uri).body(new DadosListagemProduto(produto));
 	}
 	
+
+	
 	@GetMapping
-	public ResponseEntity<Page<DadosListagemEmpresa>>listar(@PageableDefault(size = 10, sort = {"razao"}) Pageable pag){
-		var page = repository.findAllByAtivoTrue(pag).map(DadosListagemEmpresa::new);
+	public ResponseEntity<Page<DadosListagemProduto>>listar(@PageableDefault(size = 10, sort = {"descricao"}) Pageable pag){
+		var page = repository.findAll(pag).map(DadosListagemProduto::new);
 		
 		return ResponseEntity.ok(page);
 	}
 	
-	@PutMapping
-	@Transactional
-	public ResponseEntity<?> atualizar(@RequestBody @Valid DadosAtualizarEmpresa dados) {
-		
-		var empresa = repository.getReferenceById(dados.id());
-		empresa.atualizarInfo(dados);
-		
-		return ResponseEntity.ok(dados);
-	}
+//	@PutMapping
+//	@Transactional
+//	public ResponseEntity<?> atualizar(@RequestBody @Valid DadosListagemProduto dados) {
+//		
+//		var empresa = repository.getReferenceById(dados.id());
+//		empresa.atualizarInfo(dados);
+//		
+//		return ResponseEntity.ok(dados);
+//	}
 	
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity<?> excluir(@PathVariable Long id) {
-		var empresa = repository.getReferenceById(id);
-		empresa.excluir();
+		var produto = repository.getReferenceById(id);
+		produto.excluir();
 		
 		return ResponseEntity.noContent().build();
 	}

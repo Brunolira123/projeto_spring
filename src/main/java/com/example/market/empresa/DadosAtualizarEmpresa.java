@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 public record DadosAtualizarEmpresa(
 		@NotNull
 		Long id, 
-		String razao, 
+		String razao,  
 		String cnpj, 
 		DadosEndereco endereco) {
 

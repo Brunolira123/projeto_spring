@@ -10,12 +10,13 @@ import jakarta.validation.constraints.Pattern;
 public record DadosCadastroEmpresa(
 		@NotBlank
 		String razao, 
-		@NotBlank
+		@NotBlank 
 		@Pattern(regexp = "\\d{10,20}")
 		String cnpj, 
 		
 		@NotNull
 		@Valid
 		DadosEndereco endereco) {
+
 
 }
